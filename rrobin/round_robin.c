@@ -14,7 +14,7 @@ float RB_MASTER_TIMER = 0;
 uint8_t RB_CUR_BUFFER_SIZE = 0;
 
 /* private functions */
-static int __buffer_default_data_init(CIRC_BUFFER *, float);
+static int __buffer_default_data_init(CIRC_BUFFER *);
 
 #ifndef _WIN32
     static int sleep_in_ms(long);
@@ -46,8 +46,7 @@ RB_FUNC_STATUS rb_initial_init(uint8_t count, float time_slice) {
 
         /* init. data to each of the process
         struct object in the c buffer */
-        if (!__buffer_default_data_init(MASTER_PROCESS_C_BUFFER, 
-        DEFAULT_EXEC_TIME)) {
+        if (!__buffer_default_data_init(MASTER_PROCESS_C_BUFFER)) {
             
             /* if the data initialisation of process buffer
             is success, then, return RB_SUCCESS */
@@ -135,6 +134,10 @@ RB_FUNC_STATUS rb_start_scheduling(func_ptr rb_callback) {
                 /* call the call back function */
                 ret_code = (*rb_callback)((void *)&rb_cur_proc, //
                 (void *)&cur_slice, (void *)&no_of_loops);
+
+                if(ret_code != RB_SUCCESS)
+                    printf("\nERR: Callback Failed");
+
             }
             else
                 /* if the process was already expired 
@@ -171,11 +174,10 @@ RB_FUNC_STATUS rb_start_scheduling(func_ptr rb_callback) {
 
 /* /////////////////////////// H E L P E R S  //////////////////////////// */
 
-static int __buffer_default_data_init(CIRC_BUFFER *cbuff, float exec_time) {
+static int __buffer_default_data_init(CIRC_BUFFER *cbuff) {
 
     PROCESS_t rb_temp_proc;
-    int t_id = 1;
-    int t_count;
+    int t_id = 0;
     int i = 0;
     float t__fval;
 
@@ -197,7 +199,7 @@ static int __buffer_default_data_init(CIRC_BUFFER *cbuff, float exec_time) {
             return 1;
 
         t_id++;
-        if (t_id == (t_count + 1))
+        if (t_id == RB_CUR_BUFFER_SIZE)
             break;
 
         i++;

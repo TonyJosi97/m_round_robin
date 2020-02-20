@@ -7,20 +7,24 @@ RB_FUNC_STATUS main_test_cb__OP_STAT(void *, void *, void *);
 
 int main() {
 
-    uint8_t proc_count;
+    int proc_count;
     float time_slice;
 
-    printf("Enter process count: ");
+    printf("Enter process count (Max. 255): ");
     scanf("%d", &proc_count);
     printf("Enter time slice per process per round: ");
     scanf("%f", &time_slice);
 
-    if (rb_initial_init(proc_count, time_slice) == RB_SUCCESS)
+    if (rb_initial_init((uint8_t)proc_count, time_slice) == RB_SUCCESS)
+
         if(rb_start_scheduling((func_ptr)main_test_cb__OP_STAT) == RB_SUCCESS)
             printf("\nSuccess");
-            
+    
+        else
+            printf("\nScheduler Failed");
+    
     else
-        printf("\nFail");
+        printf("\nInit. Fail");
 
     printf("\nExec. Completed");
 
