@@ -4,22 +4,9 @@ This project contains implementation for round - robin like process scheduling i
 
 #### Build:
 
-* Windows:
-  > build_mac.bat
-
-
-* Unix Systems:
-  > chmod u+x build_mac.bat
-
-  > ./build_mac.bat
+> make
 
 
 #### Run:
 
-* Windows:
-
-  > rrobin.o
-
-* Unix Systems:
-
-  > ./rrobin.o 
+> prog.exe
