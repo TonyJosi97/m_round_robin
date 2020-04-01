@@ -41,7 +41,7 @@ RB_FUNC_STATUS rb_initial_init(uint8_t count, float time_slice) {
         return RB_INVD_ARGS;
 
     /* initialise circular buffer & fill it with default values */
-    if (cb_init(MASTER_PROCESS_C_BUFFER, sizeof(CIRC_BUFFER), 
+    if (cb_init(MASTER_PROCESS_C_BUFFER, sizeof(PROCESS_t), 
     RB_CUR_BUFFER_SIZE) == CB_SUCCESS) {
 
         /* init. data to each of the process
@@ -166,6 +166,7 @@ RB_FUNC_STATUS rb_start_scheduling(func_ptr rb_callback) {
 
     }
 
+    cb_free(MASTER_PROCESS_C_BUFFER);
     printf("\nSTAT -> TOTAL TIME: %f", RB_MASTER_TIMER);
 
     /* return, success */
@@ -174,7 +175,7 @@ RB_FUNC_STATUS rb_start_scheduling(func_ptr rb_callback) {
 
 /* /////////////////////////// H E L P E R S  //////////////////////////// */
 
-static int __buffer_default_data_init(CIRC_BUFFER *cbuff) {
+static int __buffer_default_data_init(CIRC_BUFFER *cbuff_handle) {
 
     PROCESS_t rb_temp_proc;
     int t_id = 0;
@@ -195,7 +196,7 @@ static int __buffer_default_data_init(CIRC_BUFFER *cbuff) {
         rb_temp_proc.expired_flag = 0;
 
         /* push the process struct to the buffer */
-        if (cb_push(cbuff, &rb_temp_proc) != CB_SUCCESS)
+        if (cb_push(cbuff_handle, &rb_temp_proc) != CB_SUCCESS)
             return 1;
 
         t_id++;
